@@ -1,2 +1,4 @@
 # MachineLearing-python
--[线性回归](https://github.com/wkd-lidashuang/MachineLearing-python/blob/master/machine-learing-ex1.py)
+-[linear_regression](https://github.com/wkd-lidashuang/MachineLearing-python/blob/master/machine-learing-ex1.py)
+
+-[logistic_regression](https://github.com/wkd-lidashuang/MachineLearing-python/blob/master/machine-learing-ex2.py)

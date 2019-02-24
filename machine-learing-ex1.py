@@ -17,7 +17,7 @@ def plot_data(data):
 
 def computeCost(x, y, theta):
     inner = np.power(((x.dot(theta.T)) - y), 2)
-    return np.sum(inner) / (2 * len(x))
+    return np.mean(inner) / 2
 
 
 def gradientDescent(X, y, theta, alpha, epoch):
@@ -44,7 +44,7 @@ def linear_regression_one_variable():
     # plot_data(data)
     data.insert(0, 'Ones', 1)
     cols = data.shape[1]  # columns
-    x = data.iloc[:, 0: cols - 1].values
+    x = data.iloc[:, : -1].values
     y = data.iloc[:, cols - 1: cols].values
     theta = np.array([[0, 0]])
     # cost = computeCost(x, y, theta)

@@ -5,9 +5,6 @@ from mpl_toolkits.mplot3d import Axes3D
 
 
 def plot_data(data):
-    # print(data.head())
-    # print(data.describe())
-    # print(data)
     data.plot(kind='scatter', x='Population', y='Profit', figsize=(8, 5))
     plt.xlabel('Population of City in 10,000s')
     plt.ylabel('Profit in $10,000s')

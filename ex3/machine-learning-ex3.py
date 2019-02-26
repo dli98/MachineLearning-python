@@ -12,15 +12,7 @@ def load_data(path):
     return x, y
 
 
-def plot_an_image(X, y):
-    pick_one = np.random.randint(0, 5000)
-    image = X[pick_one, :]
-    plt.matshow(image.reshape((20, 20)))
-    plt.show()
-    print('this should be {}'.format(y[pick_one]))
-
-
-def plot_100_image(X):
+def display_data(X):
     """
     随机画100个数字
     """
@@ -31,7 +23,7 @@ def plot_100_image(X):
 
     for row in range(10):
         for column in range(10):
-            ax_array[row, column].matshow(sample_images[10 * row + column].reshape((20, 20)))
+            ax_array[row, column].matshow(sample_images[10 * row + column].reshape((20, 20)), cmap='gray')
     plt.xticks([])
     plt.yticks([])
     plt.show()
@@ -70,12 +62,12 @@ def regularized_gradient(theta, X, y, l):
     return first + reg
 
 
-def one_vs_all(X, y, l, K):
+def one_vs_all(X, y, Lambda, K):
     """generalized logistic regression
     args:
         X: feature matrix, (m, n+1) # with incercept x0=1
         y: target vector, (m, )
-        l: lambda constant for regularization
+        Lambda: lambda constant for regularization
         K: numbel of labels
     return: trained parameters
     """
@@ -85,10 +77,9 @@ def one_vs_all(X, y, l, K):
         theta = np.zeros(X.shape[1])  # (401,)
         y_i = np.array([1 if label == i else 0 for label in y])
 
-        ret = minimize(fun=regularized_cost, x0=theta, args=(X, y_i, l), method='TNC',
+        ret = minimize(fun=regularized_cost, x0=theta, args=(X, y_i, Lambda), method='TNC',
                        jac=regularized_gradient, options={'disp': True})
         all_theta[i - 1, :] = ret.x
-    print(all_theta.shape)
     return all_theta
 
 
@@ -112,11 +103,9 @@ def load_weight(path):
 def neural_networks():
     # Neural Networks
     theta1, theta2 = load_weight('ex3weights.mat')
-    print(theta1.shape, theta2.shape)
     X, y = load_data('ex3data1.mat')
     y = y.flatten()
     X = np.insert(X, 0, 1, axis=1)  # intercept
-    print(X.shape)
     a1 = X
     z2 = a1 @ theta1.T
     a2 = np.insert(sigmoid(z2), 0, 1, axis=1)
@@ -127,18 +116,27 @@ def neural_networks():
     print('accuracy = {0}%'.format(accuracy * 100))  # accuracy = 97.52%
 
 
-def main():
-    x, y = load_data('ex3data1.mat')
-    # plot_an_image(x, y)
-    # plot_100_image(x)
-    x = np.insert(x, 0, 1, axis=1)  # (5000, 401)
-    y = y.flatten()  # 这里消除了一个维度，方便后面的计算 or .reshape(-1) （5000，）
-    all_theta = one_vs_all(x, y, 1, 10)  # 每一行是一个分类器的一组参数
-    y_pred = predict_all(x, all_theta)
-    accuracy = np.mean(y_pred == y)
-    print('accuracy = {0}%'.format(accuracy * 100))
+## =========== Part 1: Loading and Visualizing Data =============
+print('Loading and Visualizing Data ...')
+X, y = load_data('ex3data1.mat')
 
+# Randomly select 100 data points to display
+display_data(X)
 
-if __name__ == '__main__':
-    # main()
-    neural_networks()
+input("Program paused. Press Enter to continue...")
+
+## ============ Part 2: Vectorize Logistic Regression ============
+print('Training One-vs-All Logistic Regression...')
+Lambda = 1
+X = np.insert(X, 0, 1, axis=1)  # (5000, 401)
+y = y.flatten()  # 这里消除了一个维度，方便后面的计算 or .reshape(-1) （5000，）
+all_theta = one_vs_all(X, y, Lambda, 10)
+input("Program paused. Press Enter to continue...")
+
+## ================ Part 3: Predict for One-Vs-All ================
+y_pred = predict_all(X, all_theta)
+accuracy = np.mean(y_pred == y)
+print('accuracy = {0}%'.format(accuracy * 100))
+
+## ================Neural Networks
+neural_networks()
